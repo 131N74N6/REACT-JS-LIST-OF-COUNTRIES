@@ -1,7 +1,9 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import "./DarkMode.css";
 
 export default function DarkMode() {
+    const [isDark, setIsDark] = useState(localStorage.getItem("web-theme") === "dark");
+
     function setDarkMode() {
         document.querySelector("body").setAttribute("web-theme","dark");
         localStorage.setItem("web-theme","dark");
@@ -12,24 +14,18 @@ export default function DarkMode() {
         localStorage.setItem("web-theme","light");
     }
 
-    const webTheme = localStorage.getItem("web-theme");
-
     function changeTheme(event) {
-        if (event.target.checked) {
-            setDarkMode();
-        }
-        else {
-            setLightMode();
-        }
+        const pickedTheme = event.target.checked;
+        setIsDark(pickedTheme);
     }
 
-    if (webTheme === "dark") {
-        setDarkMode();
-    }
+    useEffect(() => {
+        isDark ? setDarkMode() : setLightMode()
+    }, [isDark]);
 
     return (
         <Fragment>
-            <input type="checkbox" id="toggle-theme" onChange={changeTheme} defaultChecked={webTheme === "dark"}/>
+            <input type="checkbox" id="toggle-theme" onChange={changeTheme} checked={isDark}/>
             <label htmlFor='toggle-theme'>
                 <i className="fa-solid fa-sun"></i>
                 <i className="fa-solid fa-moon"></i>

@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
-import "./Error.css";
+import "./ErrorMessage.css";
 
-export default function Error({message}) {
+export default function ErrorMessage({message}) {
     return (
         <Fragment>
             <div className="error-msg">{message}</div>

@@ -1,7 +1,7 @@
-export default async function CountryData(apiLink) {
+export default async function CountryData(apiLink, errorMessage) {
     const request = await fetch(apiLink);
     if (!request.ok) {
-        throw new Error("The country is no longer exists");
+        throw new Error(errorMessage);
     }
     else {
         const response = await request.json();

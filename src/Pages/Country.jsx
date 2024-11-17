@@ -3,14 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import "./Country.css";
 import Header from "../Components/Header";
 import CountryCard from "../Components/CountryCard";
+import Footer from "../Components/Footer";
 import CountryData from "../Data/CountryData";
 import Loading from "../Utilities/Loading";
-import Error from "../Utilities/Error";
+import ErrorMessage from "../Utilities/ErrorMessage";
 
 export default function Country() {
     const { data: countryData, isLoading, error } = useQuery({
         queryKey: ['all-country-data'], 
-        queryFn: async () => await CountryData("https://restcountries.com/v3.1/all"),
+        queryFn: async () => await CountryData(
+            "https://restcountries.com/v3.1/all", "Check Your Internet Connection"
+        ),
         staleTime: 1000 * 60 * 3,
         cacheTime: 1000 * 60 * 5
     });
@@ -51,7 +54,7 @@ export default function Country() {
 
     return (
         <Fragment>
-            <Header/>
+            <Header page={1}/>
             <div className="all-countries">
                 <div className="filter">
                     <select onChange={regionFilter} name="region-filter" title="region-filter">
@@ -66,13 +69,14 @@ export default function Country() {
                 </div>
                 <div className="all-countries-wrap">
                     <div className="all-countries-content">
-                        {isLoading && <Loading/>}
-                        {error ? <Error message={error.message}/> : 
+                        {isLoading ? <Loading/> :
+                            error ? <ErrorMessage message={error.message}/> : 
                             <CountryCard data={filter} dataKey={"data-country"}/>
                         }
                     </div>
                 </div>
             </div>
+            <Footer/>
         </Fragment>
     )
 }

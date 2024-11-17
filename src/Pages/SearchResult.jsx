@@ -5,8 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import CountryData from '../Data/CountryData';
 import CountryCard from '../Components/CountryCard';
 import Loading from '../Utilities/Loading';
+import ErrorMessage from '../Utilities/ErrorMessage';
 import "./SearchResult.css";
-import Error from '../Utilities/Error';
 
 export default function SearchResult() {
     const location = useLocation();
@@ -15,23 +15,28 @@ export default function SearchResult() {
 
     const { data: searchedCountry, isLoading, error } = useQuery({
         queryKey: useMemo(() => ["search-country", getData], [getData]),
-        queryFn: async () => await CountryData(`https://restcountries.com/v3.1/name/${getData}`),
+        queryFn: async () => await CountryData(
+            `https://restcountries.com/v3.1/name/${getData}`, `No Result For ${getData}`
+        ),
         staleTime: 5000,
         cacheTime: 1000 * 60 * 5
     });
 
     return (
         <Fragment>
-            <Header />
+            <Header page={2} />
             <div className="result-wrap">
-                <div className="indicator">Result for "{getData}"</div>
-                <div className="result-content">
-                    {isLoading && <Loading />}
-                    {!searchedCountry || searchedCountry.length === 0 && `No Result for ${getData}`}
-                    {!error ? <CountryCard data={searchedCountry} dataKey="searched-country" /> : 
-                        <Error message={error.message}/>
-                    }
-                </div>
+                {isLoading ? <Loading /> :
+                    error ? error.name === "TypeError" && error.message === "Failed to fetch" ?
+                    <ErrorMessage message={"Check Your Internet Connection"}/> :
+                    <ErrorMessage message={error.message}/> :
+                    <div>
+                        <div className="indicator">Result for "{getData}"</div>
+                        <div className="result-content">
+                            <CountryCard data={searchedCountry} dataKey="searched-country" />
+                        </div> 
+                    </div>
+                }
             </div>
         </Fragment>
     )

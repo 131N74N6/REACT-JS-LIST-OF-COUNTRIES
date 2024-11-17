@@ -15,6 +15,12 @@
     display: none;
 }
 
+.header a {
+    text-decoration: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
 .header label[for='dark-setter'] i {
     font-size: 1.8rem;
     cursor: pointer;
